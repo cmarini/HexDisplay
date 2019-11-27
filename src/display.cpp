@@ -214,11 +214,12 @@ hsva_t* rgb_to_hsv(rgba_t* p_rgb, hsva_t* p_hsv)
     
     // Vibrancy
     p_hsv->v = map(maxVal, 0, RGB_VAL_LIMIT, 0, V_VAL_LIMIT);
-    p_hsv->v = constrain(p_hsv->v, 0, V_VAL_LIMIT);
+    // p_hsv->v = constrain(p_hsv->v, 0, V_VAL_LIMIT);
+    p_hsv->v = min(p_hsv->v, V_VAL_LIMIT);
     
     // Saturation
     p_hsv->s = map(minVal, 0, maxVal, S_VAL_LIMIT, 0);
-    p_hsv->s = constrain(p_hsv->s, 0, S_VAL_LIMIT);
+    p_hsv->s = min(p_hsv->s, S_VAL_LIMIT);
     
     // Hue
     if (p_rgb->b == minVal && p_rgb->r == maxVal)
@@ -245,7 +246,7 @@ hsva_t* rgb_to_hsv(rgba_t* p_rgb, hsva_t* p_hsv)
     {
         p_hsv->h = map(p_rgb->b, maxVal, minVal, H_VAL_SECTION*5, H_VAL_SECTION*6);
     }
-    p_hsv->h = constrain(p_hsv->h, 0, H_VAL_LIMIT);
+    p_hsv->h = min(p_hsv->h, H_VAL_LIMIT);
     
     return p_hsv;
 }
