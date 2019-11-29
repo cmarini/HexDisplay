@@ -52,6 +52,65 @@
     typedef uint8_t cval_t;
 #endif
 
+extern int pixelRowStart_lut[PIXEL_ROW_COUNT];
+extern int pixelRowLength_lut[PIXEL_ROW_COUNT];
+#define rc_to_i(r,c) (pixelRowStart_lut[(r)]+(c))
+
+typedef enum {
+    DIR_N  = 0x01,
+    DIR_NE = 0x02,
+    DIR_SE = 0x04,
+    DIR_S  = 0x08,
+    DIR_SW = 0x10,
+    DIR_NW = 0x20,
+    
+    DIR_FIRST = DIR_N,
+    DIR_LAST = DIR_NW,
+} dir_t;
+
+#define DIR_COUNT 6
+
+typedef enum {
+    EDGE_NE = 0x02,
+    EDGE_E  = 0x03,
+    EDGE_SE = 0x08,
+    EDGE_SW = 0x20,
+    EDGE_W  = 0x40,
+    EDGE_NW = 0x80,
+} edge_t;
+
+
+
+
+typedef enum {
+    DIFF_COLOR,
+    DIFF_DURATION,
+    DIFF_BOTH,
+    DIFF_EITHER,
+} PIXEL_SET_CONDITION_t;
+
+typedef struct {
+    cval_t r;
+    cval_t g;
+    cval_t b;
+    cval_t a;
+} rgba_t;
+typedef struct {
+    cval_t r;
+    cval_t g;
+    cval_t b;
+} rgb_t;
+typedef struct {
+    cval_t h;
+    cval_t s;
+    cval_t v;
+    cval_t a;
+} hsva_t;   
+
+typedef struct {
+    uint8_t row;
+    uint8_t col;
+} coord_t;
 
 #define USE_BRIGHTNESS_CORRECTION 1
 

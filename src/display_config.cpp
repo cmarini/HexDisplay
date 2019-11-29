@@ -8,6 +8,9 @@
 #define BR_LUT_POW 0
 #define BR_LUT_ESS 0
 
+int pixelRowStart_lut[PIXEL_ROW_COUNT];
+int pixelRowLength_lut[PIXEL_ROW_COUNT];
+
 cval_t brightness_lut[] = {
 #if BR_LUT_LOG
     0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3,

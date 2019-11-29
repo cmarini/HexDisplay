@@ -306,8 +306,8 @@ void brightnessRotateRGB(funcState_t state)
 #endif
 
 #if 1
-Layer layer_ripple;
-Layer* layerPtr_ripple = &layer_ripple;
+//Layer layer_ripple;
+Layer* layerPtr_ripple = Display::getAvailableLayer();
 
 //rgba_t ripple_baseColor = {0, 0, B_VAL_LIMIT};
 hsva_t ripple_baseColor = {0, S_VAL_LIMIT, V_VAL_LIMIT, A_VAL_LIMIT};
@@ -365,7 +365,7 @@ void ripple(funcState_t state)
     
     switch(state)   {
         case STATE_INIT: {
-            layer_ripple.moveToTop();
+            layerPtr_ripple->moveToTop();
             ripple_baseColor.a = A_VAL_LIMIT;
             center = layerPtr_ripple->getCenterPixel();
             for (int i = 0; i < PIXEL_COUNT; i++) {
@@ -427,15 +427,14 @@ rgba_t green = {0, G_VAL_LIMIT, 0, A_VAL_LIMIT};
 rgba_t blue = {0, 0, B_VAL_LIMIT, A_VAL_LIMIT};
 rgba_t off = {0, 0, 0, 0};
     
-Layer layer_rgb = Layer();
+//Layer layer_rgb = Layer();
 void rgbRepeat(funcState_t state)
 {
     static uint32_t lastUpdate = 0;
     static Layer* layerPtr_rgb;
     switch(state) {
         case STATE_INIT: {
-            layer_rgb.moveToTop();
-            layerPtr_rgb = &layer_rgb;
+            layerPtr_rgb = Display::getAvailableLayer();
             for (int i = 0; i < PIXEL_COUNT-4; i+=4) {
                 layerPtr_rgb->getPixel(i)->
                     setDuration(0)->
@@ -481,7 +480,7 @@ void rgbRepeat(funcState_t state)
 displayFunc_t displayFunctions[] = 
 {
     //clockLoop,
-    snow::loop,
+    //snow::loop,
     ripple,
 	rgbRepeat,
 //    brightnessRotateRGB,

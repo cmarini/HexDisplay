@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "display_config.h"
-#include "display.h"
 #include "pixel.h"
 
 class Layer
@@ -15,7 +14,8 @@ class Layer
         // METHODS
         Layer();
         ~Layer();
-        
+        void init();
+    
         static Layer* getBase();
         static Layer* getTop();
         static uint8_t getLayerCount();

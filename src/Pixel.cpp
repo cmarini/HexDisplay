@@ -1,5 +1,5 @@
 #include "pixel.h"
-#include "layer.h"
+//#include "layer.h"
 
 bool Pixel::areEqualRGB(rgba_t* rgb1, rgba_t* rgb2)
 {
@@ -260,3 +260,105 @@ int Pixel::getIndex()
     return rc_to_i(this->loc.row, this->loc.col);
 }
 
+
+rgba_t* hsv_to_rgb(hsva_t* p_hsv, rgba_t* p_rgb)
+{
+    p_rgb->a = p_hsv->a;
+    // Determine the Hue
+    while (p_hsv->h >= H_VAL_LIMIT) {
+        p_hsv->h -= H_VAL_LIMIT;
+    }
+    
+    //if (p_hsv->h >= 0 && p_hsv->h < H_VAL_SECTION) {
+    if (p_hsv->h < H_VAL_SECTION) { // unnecessary comparison (p_hsv->h >= 0)
+        p_rgb->r = R_VAL_LIMIT;
+        p_rgb->g = map(p_hsv->h, H_VAL_SECTION*0, H_VAL_SECTION*1, 0, G_VAL_LIMIT);
+        p_rgb->b = 0;
+    } else if (p_hsv->h < H_VAL_SECTION*2) {
+        p_rgb->r = map(p_hsv->h, H_VAL_SECTION*1, H_VAL_SECTION*2, R_VAL_LIMIT, 0);
+        p_rgb->g = G_VAL_LIMIT;
+        p_rgb->b = 0;
+    } else if (p_hsv->h < H_VAL_SECTION*3) {
+        p_rgb->r = 0;
+        p_rgb->g = G_VAL_LIMIT;
+        p_rgb->b = map(p_hsv->h, H_VAL_SECTION*2, H_VAL_SECTION*3, 0, B_VAL_LIMIT);
+    } else if (p_hsv->h < H_VAL_SECTION*4) {
+        p_rgb->r = 0;
+        p_rgb->g = map(p_hsv->h, H_VAL_SECTION*3, H_VAL_SECTION*4, G_VAL_LIMIT, 0);
+        p_rgb->b = B_VAL_LIMIT;
+    } else if (p_hsv->h < H_VAL_SECTION*5) {
+        p_rgb->r = map(p_hsv->h, H_VAL_SECTION*4, H_VAL_SECTION*5, 0, R_VAL_LIMIT);
+        p_rgb->g = 0;
+        p_rgb->b = B_VAL_LIMIT;
+    } else if (p_hsv->h < H_VAL_SECTION*6) {
+        p_rgb->r = R_VAL_LIMIT;
+        p_rgb->g = 0;
+        p_rgb->b = map(p_hsv->h, H_VAL_SECTION*5, H_VAL_SECTION*6, B_VAL_LIMIT, 0);
+    } else {
+        p_rgb->r = 0;
+        p_rgb->g = 0;
+        p_rgb->b = 0;
+    }
+    
+    // Modify for Saturation
+    p_hsv->s = min(p_hsv->s, S_VAL_LIMIT);
+    if(p_hsv->s < S_VAL_LIMIT) {
+        p_rgb->r = map(p_hsv->s, 0, S_VAL_LIMIT, R_VAL_LIMIT, p_rgb->r); 
+        p_rgb->g = map(p_hsv->s, 0, S_VAL_LIMIT, G_VAL_LIMIT, p_rgb->g); 
+        p_rgb->b = map(p_hsv->s, 0, S_VAL_LIMIT, B_VAL_LIMIT, p_rgb->b); 
+    }
+    
+    // Modify for Vibrancy
+    p_hsv->v = min(p_hsv->v, V_VAL_LIMIT);
+    if (p_hsv->v < V_VAL_LIMIT) {
+        p_rgb->r = map(p_hsv->v, 0, V_VAL_LIMIT, 0, p_rgb->r); 
+        p_rgb->g = map(p_hsv->v, 0, V_VAL_LIMIT, 0, p_rgb->g); 
+        p_rgb->b = map(p_hsv->v, 0, V_VAL_LIMIT, 0, p_rgb->b); 
+    }
+    return p_rgb;
+}
+
+hsva_t* rgb_to_hsv(rgba_t* p_rgb, hsva_t* p_hsv)
+{
+    p_hsv->a = p_rgb->a;
+    cval_t maxVal = max(p_rgb->r, max(p_rgb->g, p_rgb->b));
+    cval_t minVal = min(p_rgb->r, min(p_rgb->g, p_rgb->b));
+    
+    // Vibrancy
+    p_hsv->v = map(maxVal, 0, RGB_VAL_LIMIT, 0, V_VAL_LIMIT);
+    // p_hsv->v = constrain(p_hsv->v, 0, V_VAL_LIMIT);
+    p_hsv->v = min(p_hsv->v, V_VAL_LIMIT);
+    
+    // Saturation
+    p_hsv->s = map(minVal, 0, maxVal, S_VAL_LIMIT, 0);
+    p_hsv->s = min(p_hsv->s, S_VAL_LIMIT);
+    
+    // Hue
+    if (p_rgb->b == minVal && p_rgb->r == maxVal)
+    {
+        p_hsv->h = map(p_rgb->g, minVal, maxVal, H_VAL_SECTION*0, H_VAL_SECTION*1);
+    }
+    else if (p_rgb->b == minVal && p_rgb->g == maxVal)
+    {
+        p_hsv->h = map(p_rgb->r, maxVal, minVal, H_VAL_SECTION*1, H_VAL_SECTION*2);
+    }
+    else if (p_rgb->r == minVal && p_rgb->g == maxVal)
+    {
+        p_hsv->h = map(p_rgb->b, minVal, maxVal, H_VAL_SECTION*2, H_VAL_SECTION*3);
+    }
+    else if (p_rgb->r == minVal && p_rgb->b == maxVal)
+    {
+        p_hsv->h = map(p_rgb->g, maxVal, minVal, H_VAL_SECTION*3, H_VAL_SECTION*4);
+    }
+    else if (p_rgb->g == minVal && p_rgb->b == maxVal)
+    {
+        p_hsv->h = map(p_rgb->r, minVal, maxVal, H_VAL_SECTION*4, H_VAL_SECTION*5);
+    }
+    else if (p_rgb->g == minVal && p_rgb->r == maxVal)
+    {
+        p_hsv->h = map(p_rgb->b, maxVal, minVal, H_VAL_SECTION*5, H_VAL_SECTION*6);
+    }
+    p_hsv->h = min(p_hsv->h, H_VAL_LIMIT);
+    
+    return p_hsv;
+}

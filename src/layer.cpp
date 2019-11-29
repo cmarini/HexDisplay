@@ -1,4 +1,5 @@
 #include "layer.h"
+#include "display.h"
 
 Layer* Layer::base = NULL;
 Layer* Layer::top = NULL;
@@ -18,9 +19,36 @@ Layer::Layer()
     }
     top = this;
     
-    pixelRowLength_lut_init();
-    pixelRowStart_lut_init();
     
+}
+
+Layer::~Layer()
+{
+    layerCount--;
+    if (below) {
+        if (above) {
+            below->above = this->above;
+            above->below = this->below;
+        }
+        else {
+            top = below;
+            below->above = NULL;
+        }
+    } 
+    else {
+        if (above) {
+            base = above;
+            above->below = NULL;
+        }
+        else {
+            base = NULL;
+            top = NULL;
+        }
+    }
+}
+
+void Layer::init()
+{
     /* Set each pixel's row/col and adjacency */
     for (int row = 0; row < PIXEL_ROW_COUNT; row++) {
         for (int col = 0; col < pixelRowLength_lut[row]; col++) {
@@ -72,31 +100,7 @@ Layer::Layer()
         }
     }
 }
-
-Layer::~Layer()
-{
-    layerCount--;
-    if (below) {
-        if (above) {
-            below->above = this->above;
-            above->below = this->below;
-        }
-        else {
-            top = below;
-            below->above = NULL;
-        }
-    } 
-    else {
-        if (above) {
-            base = above;
-            above->below = NULL;
-        }
-        else {
-            base = NULL;
-            top = NULL;
-        }
-    }
-}
+    
 
 uint8_t Layer::getLayerCount()
 {
