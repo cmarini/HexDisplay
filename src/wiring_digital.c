@@ -213,7 +213,11 @@ uint32_t portToPeriphID(Pio* port)
 }
 
 
-void PIOA_IRQHandler ( void )
+#ifdef __cplusplus
+extern "C" {
+#endif
+  
+extern void PIOA_IRQHandler ( void )
 {
     uint32_t status = PIOA->PIO_ISR;
     for (int i = 0; i < 32; i++) 
@@ -227,7 +231,7 @@ void PIOA_IRQHandler ( void )
         }
     }
 }
-void PIOB_IRQHandler ( void )
+extern void PIOB_IRQHandler ( void )
 {
     uint32_t status = PIOB->PIO_ISR;
     for (int i = 0; i < 32; i++) 
@@ -241,7 +245,7 @@ void PIOB_IRQHandler ( void )
         }
     }
 }
-void PIOC_IRQHandler ( void )
+extern void PIOC_IRQHandler ( void )
 {
     uint32_t status = PIOC->PIO_ISR;
     for (int i = 0; i < 32; i++) 
@@ -255,7 +259,7 @@ void PIOC_IRQHandler ( void )
         }
     }
 }
-void PIOD_IRQHandler ( void )
+extern void PIOD_IRQHandler ( void )
 {
     uint32_t status = PIOD->PIO_ISR;
     for (int i = 0; i < 32; i++) 
@@ -270,4 +274,7 @@ void PIOD_IRQHandler ( void )
     }
 }
 
+#ifdef __cplusplus
+}
+#endif
 
