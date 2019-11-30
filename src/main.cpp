@@ -2,6 +2,7 @@
 #include <sam3xa.h>
 #include <stdio.h>
 
+#define SWO(...) do{if(DEBUG) printf(__VA_ARGS__);}while(0)
 
 #include "TimerOne.h"
 //#include "tlc5958.h"
@@ -55,20 +56,28 @@ void buttonCallback(){
     buttonToggle = true;
 }
 void dipsw_cb_0(){
+    SWO("DIPSW 0");
 }
 void dipsw_cb_1(){
+    SWO("DIPSW 1");
 }
 void dipsw_cb_2(){
+    SWO("DIPSW 2");
 }
 void dipsw_cb_3(){
+    SWO("DIPSW 3");
 }
 void dipsw_cb_4(){
+    SWO("DIPSW 4");
 }
 void dipsw_cb_5(){
+    SWO("DIPSW 5");
 }
 void dipsw_cb_6(){
+    SWO("DIPSW 6");
 }
 void dipsw_cb_7(){
+    SWO("DIPSW 7");
 }
 unsigned char DIP_SW_pins[] = {
     46, 47, 48, 49, 
@@ -131,15 +140,19 @@ void loop()
                 /* Display enabled */
                 if (activeDisplayFuncs[i] == false) {
                     /* init */
+                    SWO("Init displayFunction[%d]...", i);
                     activeDisplayFuncs[i] = true;
                     displayFunctions[i](STATE_INIT);
+                    SWO("Done\n");
                 }
                 displayFunctions[i](STATE_RUN);
             } else {
                 if (activeDisplayFuncs[i]) {
                     /* deinit */
+                    SWO("Deinit displayFunction[%d]...", i);
                     activeDisplayFuncs[i] = false;
                     displayFunctions[i](STATE_DEINIT);
+                    SWO("Done\n");
                 }
             }
         }

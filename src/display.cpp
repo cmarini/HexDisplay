@@ -8,7 +8,7 @@
 
 #include <sam3xa.h>
 
-#define LAYER_COUNT 8
+#define LAYER_COUNT 2
 
 namespace {
     Layer _layers[LAYER_COUNT];

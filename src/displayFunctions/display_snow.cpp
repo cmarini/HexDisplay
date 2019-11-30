@@ -3,7 +3,7 @@
 
 namespace snow {
 
-Layer layer_snow = Layer();
+Layer* layer_snow;
 rgba_t flakeColor = {R_VAL_LIMIT, G_VAL_LIMIT, B_VAL_LIMIT, A_VAL_LIMIT};
 rgba_t flakeColorFade = {R_VAL_LIMIT, G_VAL_LIMIT, B_VAL_LIMIT, 0};
 
@@ -29,7 +29,7 @@ void snow_newFlake(Pixel* p)
 void snow_flakeFadeCallback(Pixel* p)
 {
     if (p->hasAdjacent(DIR_S)) {
-        snow_newFlake(layer_snow.getAdjacent(p, DIR_S));
+        snow_newFlake(layer_snow->getAdjacent(p, DIR_S));
     }        
     p->
         setDuration(flakeFadeDur)->
@@ -49,7 +49,7 @@ void loop(funcState_t state)
     static int nextFlakeTime;
     switch(state) {
         case STATE_INIT: {
-            layer_snow.moveToTop();
+            layer_snow = Display::getAvailableLayer();
             numFlakes = 0;
             lastFlake = -1;
             nextFlakeTime = 0;
@@ -63,12 +63,12 @@ void loop(funcState_t state)
                 
                 int randStartPos = random(HEX_SIDE_LENGTH * 2);
                 dir_t randStartDir = DIR_NE;
-                Pixel* randStartPixel = layer_snow.getCornerPixel(DIR_NW);
+                Pixel* randStartPixel = layer_snow->getCornerPixel(DIR_NW);
                 while (randStartPos-- > 0) {
                     if (! randStartPixel->hasAdjacent(randStartDir)) {
                         randStartDir = dir_CW(randStartDir, 1);
                     }
-                    randStartPixel = layer_snow.getAdjacent(randStartPixel, randStartDir);
+                    randStartPixel = layer_snow->getAdjacent(randStartPixel, randStartDir);
                 }
                 snow_newFlake(randStartPixel);
             }
