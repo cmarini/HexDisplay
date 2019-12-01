@@ -41,16 +41,11 @@ void snow_flakeFadeCallback(Pixel* p)
 void loop(funcState_t state)
 {
     
-    static const int MAX_FLAKES = 64;
-    static int numFlakes = 0;
     static int lastFlake = 0;
-    static uint32_t snowflakes[MAX_FLAKES];
-    static uint32_t lastUpdate = 0;
     static int nextFlakeTime;
     switch(state) {
         case STATE_INIT: {
             layer_snow = Display::getAvailableLayer();
-            numFlakes = 0;
             lastFlake = -1;
             nextFlakeTime = 0;
             break;
