@@ -1,5 +1,8 @@
 #include "display_config.h"
 
+int pixelRowStart_lut[PIXEL_ROW_COUNT];
+int pixelRowLength_lut[PIXEL_ROW_COUNT];
+
 #if USE_BRIGHTNESS_CORRECTION 
 
 #define BR_LUT_LOG 0
@@ -7,9 +10,6 @@
 #define BR_LUT_MARK 0
 #define BR_LUT_POW 0
 #define BR_LUT_ESS 0
-
-int pixelRowStart_lut[PIXEL_ROW_COUNT];
-int pixelRowLength_lut[PIXEL_ROW_COUNT];
 
 cval_t brightness_lut[] = {
 #if BR_LUT_LOG
