@@ -1,6 +1,8 @@
 
 #include "display_clock.h"
 
+namespace DispFunc_clock {
+
 const int sc_segLen = 7;
 const int mn_segLen = 5;
 const int sync_segLen = 3;
@@ -30,7 +32,7 @@ void clockMinCallback(Pixel* p)
 }
 
 Layer* face;
-void clockLoop(funcState_t state)
+void loop(funcState_t state)
 {
     //static Layer faceLayer;
     //static Layer* face = &faceLayer;
@@ -62,7 +64,7 @@ void clockLoop(funcState_t state)
         
     switch(state)   {
         case STATE_INIT: {
-            face = Layer::getTop();
+            face = Display::getAvailableLayer();
             firstRun = true;
             for (int i = 0; i < PIXEL_COUNT; i++) {
                 face->getPixel(i)->
@@ -104,16 +106,22 @@ void clockLoop(funcState_t state)
             int h_i, m_i, s_i, sy_i;
             for (int i = 0; i < 0; i++) 
             {   /* Iterate segments */
+                hsv_offColor = hsv_hrColor;
+                hsv_offColor.a = 0;
                 for (h_i = 0; h_i <= hr_segLen; h_i++) {
                     face->
                         getLinAdjacent(hr_segStarts[i], segDirs[i], h_i)->
                         setTransition(&hsv_offColor, millis());
                 }
+                hsv_offColor = hsv_mnColor;
+                hsv_offColor.a = 0;
                 for (m_i = 0; m_i <= mn_segLen; m_i++) {
                     face->
                         getLinAdjacent(mn_segStarts[i], segDirs[i], m_i)->
                         setTransition(&hsv_offColor, millis());
                 }
+                hsv_offColor = hsv_scColor;
+                hsv_offColor.a = 0;
                 for (s_i = 0; s_i <= sc_segLen; s_i++) {
                     face->
                         getLinAdjacent(sc_segStarts[i], segDirs[i], s_i)->
@@ -153,13 +161,13 @@ void clockLoop(funcState_t state)
             pixelCount = (segPerc * (mn_segLen)) / 100;
             pixelPerc = 100 - ((segPerc * 100 / (mn_segLen-1)) % 100);
             
-            hsv_mnColor.v = map(pixelPerc, 0, 100, 0, S_VAL_LIMIT);
+            hsv_mnColor.a = map(pixelPerc, 0, 100, 0, A_VAL_LIMIT);
             face->getLinAdjacent(mn_segStarts[segment], segDirs[segment], pixelCount)->
                 setTransition(&hsv_mnColor, millis())->
                 setDuration(1000)->
                 setHold(0)->
                 setCallback(clockMinCallback);
-            hsv_mnColor.v = map(100-pixelPerc, 0, 100, 0, S_VAL_LIMIT);
+            hsv_mnColor.a = map(100-pixelPerc, 0, 100, 0, A_VAL_LIMIT);
             face->getLinAdjacent(mn_segStarts[segment], segDirs[segment], pixelCount+1)->
                 setTransition(&hsv_mnColor, millis())->
                 setDuration(1000)->
@@ -262,4 +270,6 @@ void clockLoop(funcState_t state)
             break;
         }
     }
+}
+
 }

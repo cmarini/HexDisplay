@@ -1,7 +1,7 @@
 
 #include "display_snow.h"
 
-namespace snow {
+namespace DispFunc_snow {
 
 Layer* layer_snow;
 rgba_t flakeColor = {R_VAL_LIMIT, G_VAL_LIMIT, B_VAL_LIMIT, A_VAL_LIMIT};

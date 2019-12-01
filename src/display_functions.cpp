@@ -472,6 +472,7 @@ void rgbRepeat(funcState_t state)
 #endif
 
 #include "displayFunctions/display_snow.h"
+#include "displayFunctions/display_clock.h"
 #if 0
 #include "displayFunctions/display_snake.h"
 #include "displayFunctions/display_shimmer.h"
@@ -480,8 +481,9 @@ void rgbRepeat(funcState_t state)
 displayFunc_t displayFunctions[] = 
 {
     //clockLoop,
-    snow::loop,
     ripple,
+    DispFunc_clock::loop,
+    DispFunc_snow::loop,
 	rgbRepeat,
 //    brightnessRotateRGB,
 #if 0

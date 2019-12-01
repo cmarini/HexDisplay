@@ -3,7 +3,9 @@
 
 #include "../display_functions.h"
 
-extern void clockLoop(funcState_t);
+namespace DispFunc_clock {
+    void loop(funcState_t);
+}
 
 #endif /* _DISPLAY_CLOCK_h */
 

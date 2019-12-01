@@ -3,7 +3,7 @@
 
 #include "../display_functions.h"
 
-namespace snow {
+namespace DispFunc_snow {
     void loop(funcState_t);
 }
 
