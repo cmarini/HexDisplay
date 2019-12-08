@@ -5,4 +5,9 @@ HexDisplay.uv*
 
 docs
 DSP
-RTE
+
+RTE/*
+!RTE/Device
+
+RTE/Device/*
+!RTE/Device/ATSAM3X8E
