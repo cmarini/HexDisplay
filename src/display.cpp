@@ -11,12 +11,8 @@
 #define LAYER_COUNT 8
 
 namespace {
-    Layer _layers[LAYER_COUNT];
+    //Layer _layers[LAYER_COUNT];
     rgb_t raster[PIXEL_COUNT];
-}
-
-Layer* Display::getAvailableLayer() {
-    return Layer::getBase()->moveToTop();
 }
 
 void pixelRowLength_lut_init() {
@@ -43,9 +39,9 @@ void display_init()
 {
     pixelRowLength_lut_init();
     pixelRowStart_lut_init();    
-    for (int i=0; i<LAYER_COUNT; i++) {
-        _layers[i].init();
-    }
+    //for (int i=0; i<LAYER_COUNT; i++) {
+        //_layers[i].init();
+    //}
     displayInterface_init();
 }
 

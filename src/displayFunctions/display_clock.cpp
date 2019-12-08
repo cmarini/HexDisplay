@@ -64,7 +64,7 @@ void loop(funcState_t state)
         
     switch(state)   {
         case STATE_INIT: {
-            face = Display::getAvailableLayer();
+            face = new Layer();
             firstRun = true;
             for (int i = 0; i < PIXEL_COUNT; i++) {
                 face->getPixel(i)->
@@ -267,6 +267,7 @@ void loop(funcState_t state)
         }
         case STATE_DEINIT: {
             rtcSecTickCallback = NULL;
+            delete face;
             break;
         }
     }
