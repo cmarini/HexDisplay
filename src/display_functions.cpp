@@ -365,7 +365,7 @@ void ripple(funcState_t state)
     
     switch(state)   {
         case STATE_INIT: {
-            layerPtr_ripple = new Layer();
+            layerPtr_ripple = Display::getAvailableLayer();
             ripple_baseColor.a = A_VAL_LIMIT;
             center = layerPtr_ripple->getCenterPixel();
             for (int i = 0; i < PIXEL_COUNT; i++) {
@@ -402,8 +402,6 @@ void ripple(funcState_t state)
             break;
         }
         case STATE_DEINIT: {
-            delete layerPtr_ripple;
-            break;
             ripple_waitForProp = 0;
             ripple_waveColor = ripple_baseColor;
             ripple_waveColor.s = S_VAL_LIMIT/4;
@@ -436,7 +434,7 @@ void rgbRepeat(funcState_t state)
     static Layer* layerPtr_rgb;
     switch(state) {
         case STATE_INIT: {
-            layerPtr_rgb = new Layer();
+            layerPtr_rgb = Display::getAvailableLayer();
             for (int i = 0; i < PIXEL_COUNT-4; i+=4) {
                 layerPtr_rgb->getPixel(i)->
                     setDuration(0)->
@@ -465,7 +463,6 @@ void rgbRepeat(funcState_t state)
             break;
         }
         case STATE_DEINIT: {
-            delete layerPtr_rgb;
             break;
         }
     }

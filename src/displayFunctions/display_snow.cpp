@@ -45,7 +45,7 @@ void loop(funcState_t state)
     static int nextFlakeTime;
     switch(state) {
         case STATE_INIT: {
-            layer_snow = new Layer();
+            layer_snow = Display::getAvailableLayer();
             lastFlake = -1;
             nextFlakeTime = 0;
             break;
@@ -70,7 +70,6 @@ void loop(funcState_t state)
             break;
         }
         case STATE_DEINIT: {
-            delete layer_snow;
             break;
         }
     }

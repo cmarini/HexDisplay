@@ -18,7 +18,8 @@ Layer::Layer()
         below = top;
     }
     top = this;
-    this->init();    
+    
+    
 }
 
 Layer::~Layer()
