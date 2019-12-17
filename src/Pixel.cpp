@@ -1,5 +1,4 @@
 #include "pixel.h"
-//#include "layer.h"
 
 bool Pixel::areEqualRGB(rgba_t* rgb1, rgba_t* rgb2)
 {
@@ -177,21 +176,10 @@ Pixel* Pixel::setTransition(rgba_t* p_rgb, uint32_t start)
     p_rgb->b = min(p_rgb->b, B_VAL_LIMIT);
     p_rgb->a = min(p_rgb->a, A_VAL_LIMIT);
     
-    this->start = this->current;
-    
-    this->target = *p_rgb;
-    
+    this->start = this->current;    
+    this->target = *p_rgb;    
     this->complete = false;
-    /*
-    if (duration == 0)
-    {
-        this->current = *p_rgb;
-        this->complete = true;
-        if (this->callback != NULL) {
-            (this->callback)(this);
-        }
-    }
-    */
+    
     return this;
 }
 

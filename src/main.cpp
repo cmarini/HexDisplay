@@ -21,24 +21,6 @@
 Tc* TC2_pnt = TC2;
 Rtc* RTC_pnt = RTC;
 
-/*
-unsigned char ramp[101] = {
-      0,   1,   1,   1,   2,   2,   3,   3,   4,   5, 
-      5,   6,   6,   7,   8,   8,   9,  10,  10,  11, 
-     12,  12,  13,  14,  15,  15,  16,  17,  17,  18, 
-     19,  20,  21,  21,  22,  23,  24,  25,  26,  27, 
-     27,  28,  29,  30,  31,  32,  33,  34,  35,  36, 
-     37,  39,  40,  41,  42,  43,  44,  46,  47,  48, 
-     50,  51,  52,  54,  55,  57,  58,  60,  62,  63, 
-     65,  67,  69,  71,  73,  75,  77,  79,  82,  84, 
-     87,  89,  92,  95,  99, 102, 105, 109, 113, 118, 
-    123, 128, 134, 140, 148, 156, 167, 179, 195, 217, 
-    255, 
-};
-*/
-  
-
-
 volatile bool whiteMode = false;
 volatile bool buttonToggle = false;
 bool ledState = true;
@@ -157,26 +139,6 @@ void loop()
             }
         }
     }
-#if 0
-    if (displayFuncNum != displayFuncNum_prev) {
-        if (displayFuncNum < 0 || displayFuncNum >= NUM_DISPLAY_FUNCS) {
-            displayFuncNum = 0;
-        }
-        /* deinit */
-        if (!(displayFuncNum_prev < 0 || displayFuncNum_prev >= NUM_DISPLAY_FUNCS)) {
-            if (displayFunctions[displayFuncNum_prev] != NULL) {
-                displayFunctions[displayFuncNum_prev](STATE_DEINIT);
-            }
-        }
-        displayFuncNum_prev = displayFuncNum;
-        if (displayFunctions[displayFuncNum] != NULL) {
-            displayFunctions[displayFuncNum](STATE_INIT);
-        }
-    }
-    if (displayFunctions[displayFuncNum] != NULL) {
-        displayFunctions[displayFuncNum](STATE_RUN);
-    }
-#endif
     
 #if defined(_DISPLAY_TLC5958_h)
     if (!doVsync && (now - lastUpdate > 1)) {
@@ -201,12 +163,6 @@ void loop()
         buttonToggle = false;
         displayFuncNum++;
     }
-    /*
-    if (digitalRead_arduino(DIP_SW_pins[0]) == LOW) {
-        TLC.WriteFC1();
-        TLC.WriteFC2();
-    }
-    */
     
 }
 

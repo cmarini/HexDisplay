@@ -11,14 +11,12 @@ class Pixel
     typedef void (*PixelCallback_t)(Pixel*);
     
     public:
-        // PROPERTIES
         coord_t loc;
         uint8_t adjacency;
     
         uint32_t duration;
         uint32_t hold;
     
-        // METHODS
         Pixel();
     
         static bool areEqualRGB(rgba_t*, rgba_t*);
@@ -61,7 +59,6 @@ class Pixel
         cval_t getCurrentA();
     
     protected:
-        // PROPERTIES
         PixelCallback_t callback;
         bool complete;
         
