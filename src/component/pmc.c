@@ -251,11 +251,11 @@ void pmc_switch_sclk_to_32kxtal(uint32_t ul_bypass)
 {
 	/* Set Bypass mode if required */
 	if (ul_bypass == 1) {
-		SUPC->SUPC_MR |= SUPC_MR_KEY(SUPC_KEY_VALUE) |
+		SUPC->SUPC_MR |= SUPC_MR_KEY_PASSWD |
 				SUPC_MR_OSCBYPASS;
 	}
 
-	SUPC->SUPC_CR |= SUPC_CR_KEY(SUPC_KEY_VALUE) | SUPC_CR_XTALSEL;
+	SUPC->SUPC_CR |= SUPC_MR_KEY_PASSWD | SUPC_CR_XTALSEL;
 }
 
 /**
@@ -286,12 +286,12 @@ void pmc_switch_mainck_to_fastrc(uint32_t ul_moscrcf)
 	/* Enable Fast RC oscillator but DO NOT switch to RC now */
 	if (PMC->CKGR_MOR & CKGR_MOR_MOSCXTEN) {
 		PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCRCF_Msk) |
-				PMC_CKGR_MOR_KEY_VALUE | CKGR_MOR_MOSCRCEN |
+				CKGR_MOR_KEY_PASSWD | CKGR_MOR_MOSCRCEN |
 				ul_moscrcf;
 	} else {
 		ul_needXTEN = 1;
 		PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCRCF_Msk) |
-				PMC_CKGR_MOR_KEY_VALUE | CKGR_MOR_MOSCRCEN |
+				CKGR_MOR_KEY_PASSWD | CKGR_MOR_MOSCRCEN |
 				CKGR_MOR_MOSCXTEN | CKGR_MOR_MOSCXTST(PMC_XTAL_STARTUP_TIME) |
 				ul_moscrcf;
 	}
@@ -300,12 +300,12 @@ void pmc_switch_mainck_to_fastrc(uint32_t ul_moscrcf)
 	while (!(PMC->PMC_SR & PMC_SR_MOSCRCS));
 
 	/* Switch to Fast RC */
-	PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCSEL) | PMC_CKGR_MOR_KEY_VALUE;
+	PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCSEL) | CKGR_MOR_KEY_PASSWD;
 
 	// BUG FIX : clock_example3_SAM3S_SERIES does not switch sclk->mainck with XT disabled.
 	if (ul_needXTEN) {
 		PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCXTEN) |
-				PMC_CKGR_MOR_KEY_VALUE;
+				CKGR_MOR_KEY_PASSWD;
 	}
 }
 
@@ -317,7 +317,7 @@ void pmc_switch_mainck_to_fastrc(uint32_t ul_moscrcf)
 void pmc_osc_enable_fastrc(uint32_t ul_rc)
 {
 	/* Enable Fast RC oscillator but DO NOT switch to RC now. Keep MOSCSEL to 1 */
-	PMC->CKGR_MOR = PMC_CKGR_MOR_KEY_VALUE | CKGR_MOR_MOSCSEL |
+	PMC->CKGR_MOR = CKGR_MOR_KEY_PASSWD | CKGR_MOR_MOSCSEL |
 			CKGR_MOR_MOSCXTEN | CKGR_MOR_MOSCRCEN | ul_rc;
 	/* Wait the Fast RC to stabilize */
 	while (!(PMC->PMC_SR & PMC_SR_MOSCRCS));
@@ -329,7 +329,7 @@ void pmc_osc_enable_fastrc(uint32_t ul_rc)
 void pmc_osc_disable_fastrc(void)
 {
 	/* Disable Fast RC oscillator */
-	PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCRCEN) | PMC_CKGR_MOR_KEY_VALUE;
+	PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCRCEN) | CKGR_MOR_KEY_PASSWD;
 }
 
 /**
@@ -349,16 +349,16 @@ void pmc_switch_mainck_to_xtal(uint32_t ul_bypass)
 	/* Enable Main Xtal oscillator */
 	if (ul_bypass) {
 		PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCXTEN) |
-				PMC_CKGR_MOR_KEY_VALUE | CKGR_MOR_MOSCXTBY |
+				CKGR_MOR_KEY_PASSWD | CKGR_MOR_MOSCXTBY |
 				CKGR_MOR_MOSCSEL;
 	} else {
 		PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCXTBY) |
-				PMC_CKGR_MOR_KEY_VALUE | CKGR_MOR_MOSCXTEN |
+				CKGR_MOR_KEY_PASSWD | CKGR_MOR_MOSCXTEN |
 				CKGR_MOR_MOSCXTST(PMC_XTAL_STARTUP_TIME);
 		/* Wait the Xtal to stabilize */
 		while (!(PMC->PMC_SR & PMC_SR_MOSCXTS));
 
-		PMC->CKGR_MOR |= PMC_CKGR_MOR_KEY_VALUE | CKGR_MOR_MOSCSEL;
+		PMC->CKGR_MOR |= CKGR_MOR_KEY_PASSWD | CKGR_MOR_MOSCSEL;
 	}
 }
 
@@ -372,10 +372,10 @@ void pmc_osc_disable_xtal(uint32_t ul_bypass)
 	/* Disable xtal oscillator */
 	if (ul_bypass) {
 		PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCXTBY) |
-				PMC_CKGR_MOR_KEY_VALUE;
+				CKGR_MOR_KEY_PASSWD;
 	} else {
 		PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCXTEN) |
-				PMC_CKGR_MOR_KEY_VALUE;
+				CKGR_MOR_KEY_PASSWD;
 	}
 }
 
@@ -1000,9 +1000,9 @@ void pmc_enable_backupmode(void)
 void pmc_set_writeprotect(uint32_t ul_enable)
 {
 	if (ul_enable) {
-		PMC->PMC_WPMR = PMC_WPMR_WPKEY_VALUE | PMC_WPMR_WPEN;
+		PMC->PMC_WPMR = PMC_WPMR_WPKEY_PASSWD | PMC_WPMR_WPEN;
 	} else {
-		PMC->PMC_WPMR = PMC_WPMR_WPKEY_VALUE;
+		PMC->PMC_WPMR = PMC_WPMR_WPKEY_PASSWD;
 	}
 }
 
