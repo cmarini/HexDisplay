@@ -2,7 +2,8 @@
 #include <sam3xa.h>
 #include <stdio.h>
 
-#define SWO(...) do{if(DEBUG) printf(__VA_ARGS__);}while(0)
+// #define SWO(...) do{if(DEBUG) printf(__VA_ARGS__);}while(0)
+#define SWO(...) __NOP();
 
 #include "TimerOne.h"
 //#include "tlc5958.h"
@@ -31,8 +32,13 @@ rgba_t rgb_temp;
 
 uint32_t now = 0;
 uint32_t lastUpdate = 0;
-uint32_t updateDelay = 30;
+uint32_t updateDelay = 0;
 uint32_t lastAnalogRead = 0;
+
+volatile uint32_t framerate = 0;
+uint32_t framerate_count = 0;
+uint32_t framerate_start = 0;
+uint32_t framerate_end = 0;
 
 void buttonCallback(){
     buttonToggle = true;
@@ -108,6 +114,9 @@ void setup()
 
 bool didRead = false;
 uint32_t startTime, endTime;
+uint32_t displayFuncTime = 0;
+uint32_t displayUpdateTime = 0;
+
 int32_t displayFuncNum = 0;
 int32_t displayFuncNum_prev = -1;
 int32_t displayFuncNum_buttonPrev = displayFuncNum;
@@ -116,6 +125,7 @@ void loop()
 {
     
     now = millis();
+    startTime = millis();
     for( int i = 0; i < min(NUM_DISPLAY_FUNCS, 8); i++) {
         if (displayFunctions[i] != NULL) {
             if (digitalRead_arduino(DIP_SW_pins[i]) == LOW) {
@@ -139,6 +149,8 @@ void loop()
             }
         }
     }
+    displayFuncTime = millis() - startTime;
+    
     
 #if defined(_DISPLAY_TLC5958_h)
     if (!doVsync && (now - lastUpdate > 1)) {
@@ -149,11 +161,18 @@ void loop()
         doVsync = true;
     }
 #elif defined(_DISPLAY_SK6812_h)
+    if (millis() >= framerate_start + 1000) {
+        uint32_t timediff = millis() - framerate_start;
+        framerate = (framerate_count*1000)/timediff;
+        framerate_count = 0;
+        framerate_start = millis();
+    }
     if (now - lastUpdate > updateDelay) {
         lastUpdate = now;
         startTime = millis();
         updateDisplay();
-        endTime = millis();
+        displayUpdateTime = millis() - startTime;
+        framerate_count++;
     }
 #else
 #error NO DISPLAY UPDATE.

@@ -79,11 +79,18 @@ uint8_t spi_buff[SPI_BUFF_SIZE];
 /** DMAC Channel HW Interface Number for SPI RX. */
 #define SPI_RX_IDX  2
 
+
+uint32_t calc_duration, dmac_duration;
+
 void updateDisplay()
 {
+    
     // Disable DMAC Channel
     DMAC->DMAC_CHDR = DMAC_CHDR_DIS0 << SPI_DMAC_TX_CH;
     
+    uint32_t startTime;
+    
+    startTime = millis();
     int p, c, b;
     int idx;
     rgb_t* raster = render();
@@ -103,7 +110,8 @@ void updateDisplay()
         }
     }
     //spi_buff[idx + SPI_BUFF_OFFSET + 1] = SK6812_BYTE_ZERO;
-    
+    calc_duration = millis() - startTime;
+    startTime = millis();
     // Configure DMAC Channel
     DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_SADDR = (uint32_t)spi_buff;
     DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_DADDR = (uint32_t)&SPI0->SPI_TDR;
@@ -132,6 +140,8 @@ void updateDisplay()
     
     while(DMAC->DMAC_CHSR & (DMAC_CHSR_ENA0 << SPI_DMAC_TX_CH));
     
+    dmac_duration = millis() - startTime;
+    __NOP();
     /* Bit-bang
     for (p = 0; p < PIXEL_COUNT; p++) {
         for (c = 0; c < 3; c++) {

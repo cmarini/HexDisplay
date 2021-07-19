@@ -20,7 +20,7 @@ Layer* Display::getAvailableLayer() {
 }
 
 void pixelRowLength_lut_init() {
-    /* Pre-calculate the pixelRowLength_lut */
+    /* Pre-calculate the pixelRowLength_lut */ 
     for (int i = 0; i < PIXEL_ROW_COUNT; i++) {
         if (i < HEX_SIDE_LENGTH) {
             pixelRowLength_lut[i] = HEX_SIDE_LENGTH + i;

@@ -353,6 +353,41 @@ void rgbRepeat(funcState_t state)
     }
 }
 
+void linearFill(funcState_t state)
+{
+    static uint32_t lastUpdate = 0;
+    static Layer* layerPtr;
+    static uint32_t idx = 0;
+    switch(state) {
+        case STATE_INIT: {
+            layerPtr = Display::getAvailableLayer();
+            idx = 0;
+            for (int i = 0; i < PIXEL_COUNT; i++) {
+                layerPtr->getPixel(i)->
+                    setDuration(0)->
+                    setHold(0)->
+                    setTransition(&off, millis());
+            }
+            break;
+        }
+        case STATE_RUN: {
+            if (millis() - lastUpdate > 250) {
+                lastUpdate = millis();
+                layerPtr->getPixel(idx)->
+                    setDuration(0)->
+                    setHold(0)->
+                    setTransition(&off, millis());
+                idx++;
+                idx = idx >= PIXEL_COUNT ? 0 : idx;
+            }
+            break;
+        }
+        case STATE_DEINIT: {
+            break;
+        }
+    }
+}
+
 
 #endif
 
@@ -360,6 +395,7 @@ void rgbRepeat(funcState_t state)
 #include "displayFunctions/display_clock.h"
 #include "displayFunctions/display_ripple.h"
 #include "displayFunctions/display_flood.h"
+#include "displayFunctions/display_linearFill.h"
 #if 0
 #include "displayFunctions/display_snake.h"
 #include "displayFunctions/display_shimmer.h"
@@ -368,6 +404,7 @@ void rgbRepeat(funcState_t state)
 displayFunc_t displayFunctions[] = 
 {
     //clockLoop,
+    DispFunc_linearFill::loop,
     DispFunc_flood::loop,
     DispFunc_ripple::loop,
     DispFunc_clock::loop,
